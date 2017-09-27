@@ -1,0 +1,9 @@
+<h1>Personal Information</h1>
+<form method="post">{% csrf_token %}
+    {{ form.as_p }}
+
+    <h2>Phone Numbers</h2>
+    {{ form.phones.management_form }}
+   <input class="btn btn-primary" type="submit" value="Save"/>
+    <button onclick="window.history.back();" class="btn btn-default" type="button">Cancel</button>
+</form>

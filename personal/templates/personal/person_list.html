@@ -1,0 +1,32 @@
+<h1>Personal Information</h1>
+<!--
+<table>
+  <tr>
+    <th>First Name</th>
+    <th>Last Name</th>
+    <th>Email</th>
+  </tr>
+  {% for person in person_list %}
+  <tr>
+    <td>{{ person.first_name }}</td>
+    <td>{{person.last_name }}</td>
+    <td><a href="{% url 'personal:person_edit' person.id %}">edit</a></td>
+    <td><a href="{% url 'personal:person_delete' person.id %}">delete</a></td>
+  </tr>
+  {% endfor %}
+</table>
+<--!>
+
+{% load render_table from django_tables2 %}
+{% load static %}
+<!doctype html>
+<html>
+    <head>
+        <link rel="stylesheet" href="{% static 'django_tables2/themes/paleblue/css/screen.css' %}" />
+    </head>
+    <body>
+        {% render_table table %}
+    </body><br>
+  <a href="{% url 'personal:person_new' %}">New</a>
+</html>
+
