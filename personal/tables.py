@@ -23,7 +23,6 @@ class PersonTable(tables.Table):
         # add class="paleblue" to <table> tag
         attrs = {'class': 'paleblue'}
 
-
 class BankTable(tables.Table):
     edit_column = tables.LinkColumn('personal:bank_edit', text="Link", args=[A('pk')]);
     delete_column = tables.LinkColumn('personal:bank_delete', text="Link", args=[A('pk')]);
@@ -35,7 +34,7 @@ class BankTable(tables.Table):
         self.base_columns['delete_column'].verbose_name = "Delete";
 
     class Meta:
-        fields=['name','bnk_abbr_name','branch','brn_abbr_name','address','phone_nbr'];
+        fields=['name','branch'];
         model = BankInfo;
         # add class="paleblue" to <table> tag
         attrs = {'class': 'paleblue'}
