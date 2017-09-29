@@ -1,0 +1,15 @@
+<h1>Bank Information</h1>
+{% load render_table from django_tables2 %}
+{% load static %}
+<!doctype html>
+<html>
+    <head>
+        <link rel="stylesheet" href="{% static 'django_tables2/themes/paleblue/css/screen.css' %}" />
+    </head>
+    <body>
+        {% render_table table %}
+    </body><br><br>
+    <a href="{% url 'personal:bank_new' %}">New</a><br><br><br>
+    <a href="{% url 'personal:person_list' %}">Person Information</a>
+</html>
+

@@ -44,11 +44,13 @@ class AddressInfo(models.Model):
     country = models.CharField(max_length=50);
 
 class BankInfo(models.Model):
-    name = models.CharField(max_length=2000);
-    branch = models.CharField(max_length=2000);
-    address = models.CharField(max_length=2000);
-    phone_nbr = models.IntegerField(default = 0);
-    members = models.ManyToManyField(PersonalInfo, through='BankMembership');
+    name = models.CharField(max_length=2000, verbose_name="Bank Name");
+    bnk_abbr_name = models.CharField(max_length=200, verbose_name="Bank Short Name", null=True,default=None);
+    branch = models.CharField(max_length=2000, verbose_name="Branch Name",null=True,default=None);
+    brn_abbr_name = models.CharField(max_length=200, verbose_name="Branch Short Name", null=True, default=None);
+    address = models.CharField(max_length=2000, verbose_name="Branch Address");
+    phone_nbr = models.IntegerField(default = 0, verbose_name="Branch Telephone Number");
+    members = models.ManyToManyField(PersonalInfo, through='BankMembership', verbose_name="Membership between person and bank");
 
 class BankMembership(models.Model):
     person = models.ForeignKey(PersonalInfo, on_delete=models.CASCADE);
