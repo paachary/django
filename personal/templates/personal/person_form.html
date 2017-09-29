@@ -1,9 +1,104 @@
+<!--    {{ formset.management_form }}
+    <table>
+        {% for form in formset %}
+            {{ form }}
+        {% endfor %}
+    </table>
+-->
 <h1>Personal Information</h1>
 <form method="post">{% csrf_token %}
-    {{ form.as_p }}
 
-    <h2>Phone Numbers</h2>
-    {{ form.phones.management_form }}
+<fieldset class="module aligned ">
+    <!--    {{ form.as_table }} -->
+<table>
+<tr>
+{%for field in form %}
+    {% if not field.is_hidden %}
+      <th>{{ field.label }}</th>
+    {% endif %}
+{% endfor %}<br>
+</tr>
+<tr>
+{% for f in form %}
+    {% if not f.is_hidden %}
+        <td>
+        {{ f.errors }}
+        {{ f }}
+        </td>
+    {% endif %}
+{% endfor %}
+</tr>
+</table>
+
+</fieldset>
+
+<fieldset class="module aligned ">
+<h2>Phone Numbers</h2>
+<table>
+    <tr>
+     {% for field in phoneformset.forms.0 %}
+         {% if not field.is_hidden %}
+             <th>{{ field.label }}</th>
+         {% endif %}
+     {% endfor %}
+     </tr>
+     {% for f in phoneformset.management_form %}
+        {{ f }} 
+     {% endfor %}
+     {% for f in phoneformset.forms %}
+     <tr>
+          {% for field in f %}
+               {% if not field.is_hidden %}
+                    <td>
+                    {{ field.errors }}
+                    {{ field }}
+                    </td>
+               {% endif %}
+          {% endfor %}
+          </tr>
+     {% endfor %}
+     {% for f in phoneformset %}    
+         {% for hidden in f.hidden_fields %}
+                 {{ hidden }}
+         {% endfor %}    
+     {% endfor %}
+</table>
+</fieldset><br><br>
+
+<fieldset class="module aligned ">
+<h2>Address</h2>
+<table>
+    <tr>
+     {% for field in addformset.forms.0 %}
+         {% if not field.is_hidden %}
+             <th>{{ field.label }}</th>
+         {% endif %}
+     {% endfor %}
+     </tr>
+     {% for f in addformset.management_form %}
+        {{ f }} 
+     {% endfor %}
+     {% for f in addformset.forms %}
+     <tr>
+          {% for field in f %}
+               {% if not field.is_hidden %}
+                    <td>
+                    {{ field.errors }}
+                    {{ field }}
+                    </td>
+               {% endif %}
+          {% endfor %}
+          </tr>
+     {% endfor %}
+     {% for f in addformset %}    
+         {% for hidden in f.hidden_fields %}
+                 {{ hidden }}
+         {% endfor %}    
+     {% endfor %}
+</table>
+</fieldset><br><br>
+
+
    <input class="btn btn-primary" type="submit" value="Save"/>
     <button onclick="window.history.back();" class="btn btn-default" type="button">Cancel</button>
 </form>

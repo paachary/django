@@ -30,15 +30,18 @@ class PersonalInfoForm( ModelForm ):
         model = PersonalInfo;
         fields=['first_name','middle_name','last_name','gender','age','emailid'];
 
-PhoneFormset =formset_factory(PersonalInfoForm);
-
 class PersonPhoneInfoForm( ModelForm ):
     class Meta:
         model = PhoneInfo;
         fields=['phone_type','phone_nbr'];
-        phones = PhoneFormset();
 
 class PersonAddressInfoForm( ModelForm ):
     class Meta:
         model = AddressInfo;
         fields=['address_type','door','street','pin','city','state','country'];
+
+PhonesFormSet = inlineformset_factory(PersonalInfo, PhoneInfo, fields=('phone_type','phone_nbr'), can_delete=False, extra=3);
+
+AddressFormSet= inlineformset_factory(PersonalInfo, AddressInfo, fields=('address_type','door','street','pin','city','state','country'),
+                                     can_delete=False, extra=2);
+

@@ -1,17 +1,18 @@
-from django.db import models
+from django.core.validators import RegexValidator;
+from django.db import models;
 
 # Create your models here.
 
 
 class PersonalInfo(models.Model):
-    first_name = models.CharField(max_length=500, default=None);
+    first_name = models.CharField(max_length=500, default=None, verbose_name="First Name");
     middle_name = models.CharField(max_length=500, default=None);
     last_name = models.CharField(max_length=500, default=None);
     gender = models.CharField(choices=(("M", ("Male")),
                                        ("F", ("Female"))), max_length=2);
     age = models.IntegerField(default = 0);
-    dob = models.DateField(default=None, null=True);
-    emailid = models.CharField(max_length=500, default=None);
+    dob = models.DateField(default=None, null=True , verbose_name="Date of Birth");
+    emailid = models.CharField(max_length=500, default=None, verbose_name="Email ID");
 
     def __str__(self):
         return  (self.first_name+":"+
@@ -25,16 +26,19 @@ class PersonalInfo(models.Model):
 
 class PhoneInfo(models.Model):
     person = models.ForeignKey(PersonalInfo, on_delete=models.CASCADE);
-    phone_type = models.CharField(max_length=1, default='R');
-    phone_nbr = models.IntegerField(default = 0);
+    phone_type = models.CharField(choices=(("R",("Residence")),
+                                           ("O",("Office")),
+                                           ("M",("Mobile"))), max_length=1, default='R', verbose_name="Type");
+    phone_regex = RegexValidator(regex=r'^\+?1?\d{9,15}$', message="Phone number must be entered in the format: '+999999999'. Up to 15 digits allowed.")
+    phone_nbr = models.CharField(validators=[phone_regex], max_length=15, blank=True, verbose_name="Phone Number");
 
 class AddressInfo(models.Model):
     person = models.ForeignKey(PersonalInfo, on_delete=models.CASCADE);
     address_type = models.CharField(choices=(("P", ("Permanent")),
                                              ("T", ("Temporary"))), max_length=1, default='P');
-    door = models.IntegerField(default = 0);
-    street = models.CharField(max_length=200);
-    pin = models.IntegerField(default = 0);
+    door = models.IntegerField(default = 0, verbose_name="Door #");
+    street = models.CharField(max_length=200, verbose_name="Street Name");
+    pin = models.IntegerField(default = 0, verbose_name="Pin Code");
     city = models.CharField(max_length=50);
     state = models.CharField(max_length=50);
     country = models.CharField(max_length=50);
