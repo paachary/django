@@ -24,6 +24,9 @@ class PersonalInfo(models.Model):
     def custom_function(self):
         return "Link";
 
+    class Meta:
+        unique_together = ('first_name', 'middle_name', 'last_name');
+
 class PhoneInfo(models.Model):
     person = models.ForeignKey(PersonalInfo, on_delete=models.CASCADE);
     phone_type = models.CharField(choices=(("R",("Residence")),
@@ -31,6 +34,9 @@ class PhoneInfo(models.Model):
                                            ("M",("Mobile"))), max_length=1, default='R', verbose_name="Type");
     phone_regex = RegexValidator(regex=r'^\+?1?\d{9,15}$', message="Phone number must be entered in the format: '+999999999'. Up to 15 digits allowed.")
     phone_nbr = models.CharField(validators=[phone_regex], max_length=15, blank=True, verbose_name="Phone Number");
+
+    class Meta:
+        unique_together = ('person', 'phone_type', 'phone_nbr');
 
 class AddressInfo(models.Model):
     person = models.ForeignKey(PersonalInfo, on_delete=models.CASCADE);
@@ -43,18 +49,34 @@ class AddressInfo(models.Model):
     state = models.CharField(max_length=50);
     country = models.CharField(max_length=50);
 
+    class Meta:
+        unique_together = ('person', 'address_type');
+
 class BankInfo(models.Model):
-    name = models.CharField(max_length=2000);
-    branch = models.CharField(max_length=2000);
-    address = models.CharField(max_length=2000);
-    phone_nbr = models.IntegerField(default = 0);
-    members = models.ManyToManyField(PersonalInfo, through='BankMembership');
+    name = models.CharField(max_length=2000, verbose_name="Bank Name");
+    bnk_abbr_name = models.CharField(max_length=200, verbose_name="Bank Short Name", null=True,default=None);
+    branch = models.CharField(max_length=2000, verbose_name="Branch Name",null=True,default=None);
+    brn_abbr_name = models.CharField(max_length=200, verbose_name="Branch Short Name", null=True, default=None);
+    address = models.CharField(max_length=2000, verbose_name="Branch Address");
+    phone_regex = RegexValidator(regex=r'^\+?1?\d{9,15}$', message="Phone number must be entered in the format: '+999999999'. Up to 15 digits allowed.")
+    phone_nbr = models.CharField(validators=[phone_regex], max_length=15, blank=True, verbose_name="Branch Phone Number");
+    members = models.ManyToManyField(PersonalInfo, through='BankMembership', verbose_name="Membership between person and bank");
+
+    class Meta:
+        unique_together = ('name', 'branch');
+
+    def __str__(self):
+        return u'{0}'.format(self.bnk_abbr_name+"-"+brn_abbr_name);
 
 class BankMembership(models.Model):
     person = models.ForeignKey(PersonalInfo, on_delete=models.CASCADE);
     bank = models.ForeignKey(BankInfo, on_delete=models.CASCADE);
-    acctnbr = models.IntegerField(default = 0);
+    acct_nbr_regex = RegexValidator(regex=r'^[1-9]\d*$', message="Phone number must be entered in a number format.")
+    acctnbr = models.CharField(validators=[acct_nbr_regex], max_length=15, blank=True, verbose_name="Account Number");
     acct_type = models.CharField(choices=(("SB" ,("Savings Bank Account")),
                                           ("FD" ,("Fixed Deposit")),
-                                          ("RD" ,("Recurring Deposit"))), max_length=2, default='SB');
+                                          ("RD" ,("Recurring Deposit"))), max_length=2, default='SB', verbose_name="Account Type");
+
+    class Meta:
+        unique_together = ('person', 'bank', 'acct_type', 'acctnbr');
 
