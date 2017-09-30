@@ -33,72 +33,106 @@
 </fieldset>
 
 <fieldset class="module aligned ">
-<h2>Phone Numbers</h2>
-<table>
-    <tr>
-     {% for field in phoneformset.forms.0 %}
-         {% if not field.is_hidden %}
-             <th>{{ field.label }}</th>
-         {% endif %}
-     {% endfor %}
-     </tr>
-     {% for f in phoneformset.management_form %}
-        {{ f }} 
-     {% endfor %}
-     {% for f in phoneformset.forms %}
-     <tr>
-          {% for field in f %}
-               {% if not field.is_hidden %}
-                    <td>
-                    {{ field.errors }}
-                    {{ field }}
-                    </td>
-               {% endif %}
-          {% endfor %}
-          </tr>
-     {% endfor %}
-     {% for f in phoneformset %}    
-         {% for hidden in f.hidden_fields %}
-                 {{ hidden }}
-         {% endfor %}    
-     {% endfor %}
-</table>
+    <h2>Phone Numbers</h2>
+        <table>
+            <tr>
+            {% for field in phoneformset.forms.0 %}
+                {% if not field.is_hidden %}
+                    <th>{{ field.label }}</th>
+                 {% endif %}
+            {% endfor %}
+            </tr>
+            {% for f in phoneformset.management_form %}
+                {{ f }} 
+            {% endfor %}
+            {% for f in phoneformset.forms %}
+                <tr>
+                {% for field in f %}
+                    {% if not field.is_hidden %}
+                        <td>
+                        {{ field.errors }}
+                        {{ field }}
+                        </td>
+                   {% endif %}
+                {% endfor %}
+                </tr>
+            {% endfor %}
+            {% for f in phoneformset %}    
+                {% for hidden in f.hidden_fields %}
+                     {{ hidden }}
+                {% endfor %}    
+            {% endfor %}
+        </table>
+    <input type='submit' name='add_phone' value="Add another Row" />
 </fieldset><br><br>
 
 <fieldset class="module aligned ">
-<h2>Address</h2>
-<table>
-    <tr>
-     {% for field in addformset.forms.0 %}
-         {% if not field.is_hidden %}
-             <th>{{ field.label }}</th>
-         {% endif %}
-     {% endfor %}
-     </tr>
-     {% for f in addformset.management_form %}
-        {{ f }} 
-     {% endfor %}
-     {% for f in addformset.forms %}
-     <tr>
-          {% for field in f %}
-               {% if not field.is_hidden %}
-                    <td>
-                    {{ field.errors }}
-                    {{ field }}
-                    </td>
-               {% endif %}
-          {% endfor %}
-          </tr>
-     {% endfor %}
-     {% for f in addformset %}    
-         {% for hidden in f.hidden_fields %}
-                 {{ hidden }}
-         {% endfor %}    
-     {% endfor %}
-</table>
+    <h2>Address</h2>
+        <table>
+            <tr>
+             {% for field in addformset.forms.0 %}
+                {% if not field.is_hidden %}
+                    <th>{{ field.label }}</th>
+                {% endif %}
+             {% endfor %}
+             </tr>
+             {% for f in addformset.management_form %}
+                {{ f }} 
+             {% endfor %}
+             {% for f in addformset.forms %}
+                <tr>
+                {% for field in f %}
+                    {% if not field.is_hidden %}
+                        <td>
+                        {{ field.errors }}
+                        {{ field }}
+                        </td>
+                    {% endif %}
+                {% endfor %}
+                </tr>
+             {% endfor %}
+             {% for f in addformset %}    
+                {% for hidden in f.hidden_fields %}
+                    {{ hidden }}
+                {% endfor %}    
+             {% endfor %}
+        </table>
+    <input type='submit' name='add_address' value="Add another Row" />
 </fieldset><br><br>
 
-
+<fieldset class="module aligned ">
+<h2>Bank</h2>
+    <table>
+        <tr>
+             {% for field in bankmemformset.forms.0 %}
+                 {% if not field.is_hidden %}
+                  <th>{{ field.label }}</th>
+                 {% endif %}
+             {% endfor %}
+             </tr>
+             {% for f in bankmemformset.management_form %}
+                {{ f }} 
+             {% endfor %}
+             {% for f in bankmemformset.forms %}
+             <tr>
+                  {% for field in f %}
+                       {% if not field.is_hidden %}
+                         <td>
+                         {{ field.errors }}
+                         {{ field }}
+                            </td>
+                    {% endif %}
+                  {% endfor %}
+               </tr>
+             {% endfor %}
+             {% for f in bankmemformset %}    
+                 {% for hidden in f.hidden_fields %}
+                      {{ hidden }}
+                 {% endfor %}    
+           {% endfor %}
+        </table>
+    <input type='submit' name='add_bank' value="Add another Row" />
+</fieldset><br><br>
    <input class="btn btn-primary" type="submit" value="Save"/>
     <button onclick="window.history.back();" class="btn btn-default" type="button">Cancel</button>
 </form>

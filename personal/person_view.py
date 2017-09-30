@@ -1,12 +1,18 @@
-from django.shortcuts import render, redirect, get_object_or_404;
+from django.shortcuts import render, redirect, get_object_or_404, render_to_response;
 
 from django_tables2 import RequestConfig;
 
-from django.http import HttpResponseRedirect;
+from django.template import RequestContext;
 
-from .forms import PersonalInfoForm, PersonPhoneInfoForm, PersonAddressInfoForm, PhonesFormSet, AddressFormSet ;
+from django.http import HttpResponseRedirect, JsonResponse;
 
-from .models import PersonalInfo, PhoneInfo, AddressInfo;
+import sys;
+
+from django.db import DatabaseError;
+
+from .forms import PersonalInfoForm, PersonPhoneInfoForm, PersonAddressInfoForm, PhonesFormSet, AddressFormSet, BankMembershipFormSet ;
+
+from .models import PersonalInfo, PhoneInfo, AddressInfo, BankInfo, BankMembership;
 
 from .tables import PersonTable;
 
@@ -37,24 +43,69 @@ class person:
 
             addformset = AddressFormSet(request.POST, request.FILES, instance=Person);
 
-            if (form.is_valid()
-              and phoneformset.is_valid()
-              and addformset.is_valid()
-               ):
-                form.save();
-                phoneformset.save();
-                addformset.save();
-                return redirect('personal:person_list');
+            bankmemformset = BankMembershipFormSet(request.POST, request.FILES, instance=Person);
+            changed_flg = False;
+
+            if 'add_bank' in request.POST:
+                cp = request.POST.copy();
+                cp['bankmembership_set-TOTAL_FORMS'] = int(cp['bankmembership_set-TOTAL_FORMS'])+1;
+                bankmemformset = BankMembershipFormSet(cp,request.FILES, instance=Person);
+                changed_flg = True;
+            if 'add_address' in request.POST:
+                cp = request.POST.copy();
+                cp['addressinfo_set-TOTAL_FORMS'] = int(cp['addressinfo_set-TOTAL_FORMS'])+1;
+                addformset = AddressFormSet(cp,request.FILES, instance=Person);
+                changed_flg = True;
+            if 'add_phone' in request.POST:
+                cp = request.POST.copy();
+                cp['phoneinfo_set-TOTAL_FORMS'] = int(cp['phoneinfo_set-TOTAL_FORMS'])+1;
+                phoneformset = PhonesFormSet(cp,request.FILES, instance=Person);
+                changed_flg = True;
+
+            if (changed_flg == True ):
+                return render(request, template_name, 
+                {
+                 'form':form ,
+                 'phoneformset':phoneformset,
+                 'addformset':addformset,
+                 'bankmemformset':bankmemformset,
+                });
+
+            try:
+                if (form.is_valid()
+                  and phoneformset.is_valid()
+                  and addformset.is_valid()
+                  and bankmemformset.is_valid()
+                   ):
+                    form.save();
+                    phoneformset.save();
+                    addformset.save();
+                    bankmemformset.save();
+                    return redirect('personal:person_list');
+            ##except DatabaseError as dberr:
+            except Exception as ex:
+                message = "Database Error occurred";
+                explanation = str(dberr);
+                status_code=400;
+                return JsonResponse({'message':message,'explanation':explanation}, status=status_code)
+            else :
+                status_code=400;
+                message = "Database Error occurred";
+                explanation =  message
+                return JsonResponse({'message':message,'explanation':explanation}, status=status_code)
         else:
                 form = PersonalInfoForm(instance=Person);
                 phoneformset = PhonesFormSet(instance=Person);
                 addformset = AddressFormSet(instance=Person);
+                bankmemformset = BankMembershipFormSet(instance=Person);
 
-        return render(request, template_name, {
-           'form':form ,
-            'phoneformset':phoneformset,
-            'addformset':addformset
-        });
+        return render(request, template_name, 
+         {
+             'form':form ,
+             'phoneformset':phoneformset,
+             'addformset':addformset,
+             'bankmemformset':bankmemformset,
+         });
 
     ## Public function to generate the list of persons in a tabular format
     def person_list( self, request, template_name):
