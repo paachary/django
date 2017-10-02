@@ -1,0 +1,40 @@
+<form method="post">{% csrf_token %}
+    <h1> Account Debit Details </h1>
+    <h3>{{ object.person.first_name }} {{ object.person.last_name }}</h3>
+    <h3>{{ object.bank.name }}, {{ object.bank.branch }} ({{ object.acct_type }})</h3><br>
+ <fieldset class="module aligned ">
+    <table>
+        <tr>
+        {% for field in form.forms.0 %}
+            {% if not field.is_hidden %}
+                <th>{{ field.label }}</th>
+             {% endif %}
+        {% endfor %}
+        </tr>
+        {% for f in form.management_form %}
+            {{ f }} 
+        {% endfor %}
+        {% for f in form.forms %}
+            <tr>
+            {% for field in f %}
+                {% if not field.is_hidden %}
+                    <td>
+                    {{ field.errors }}
+                    {{ field }}
+                    </td>
+               {% endif %}
+            {% endfor %}
+            </tr>
+        {% endfor %}
+        {% for f in form %}    
+            {% for hidden in f.hidden_fields %}
+                 {{ hidden }}
+            {% endfor %}    
+        {% endfor %}
+    </table>
+    <input type='submit' name='add_record' value="Add another Row" />
+</fieldset><br><br>
+
+   <input class="btn btn-primary" type="submit" value="Confirm"/>
+   <button onclick="window.history.back();" class="btn btn-default" type="button">Cancel</button>
+</form>

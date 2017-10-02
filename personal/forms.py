@@ -5,7 +5,7 @@ from django.forms.formsets import formset_factory;
 from django.forms.models import inlineformset_factory
 from django.forms.models import BaseInlineFormSet
 
-from .models import PersonalInfo, PhoneInfo, AddressInfo, BankInfo, BankMembership;
+from .models import PersonalInfo, PhoneInfo, AddressInfo, BankInfo, BankMembership, BankDebitDetails;
 
 class PersonalInfoForm( ModelForm ):
     class Meta:
@@ -40,11 +40,19 @@ class BankMembershipForm(ModelForm):
         bank = BankInfo.objects.all();
         self.fields['bank'].choices =[(b.pk, b.bnk_abbr_name+"-"+b.brn_abbr_name)for b in bank]; 
 
-    @staticmethod
-#    def label_from_instance(obj):
-#        return "My Field name %s" % obj.bnk_abbr_name;
     class Meta:
         model=BankMembership;
         fields=['person','bank','acct_type','acctnbr'];
 
 BankMembershipFormSet = inlineformset_factory(parent_model=PersonalInfo, model=BankInfo.members.through,form=BankMembershipForm,fields=('person','bank','acct_type','acctnbr',), can_delete=True,extra=0);
+
+class BankDebitDetailsForm(ModelForm):
+
+    def __init__(self, *args, **kwargs):
+        super(BankDebitDetailsForm, self).__init__(*args, **kwargs)
+
+    class Meta:
+        model = BankDebitDetails;
+        fields=['debit_dt','debit_type','debit_desc','amount','remarks'];
+
+BankDebitDetailsFormSet = inlineformset_factory(BankMembership, BankDebitDetails, fields=('debit_dt','debit_type','debit_desc','amount','remarks'),can_delete=True, extra=4);

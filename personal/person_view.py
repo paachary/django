@@ -46,6 +46,8 @@ class person:
             bankmemformset = BankMembershipFormSet(request.POST, request.FILES, instance=Person);
             changed_flg = False;
 
+            ## handling the individual form "add" buttons for each of the categories
+
             if 'add_bank' in request.POST:
                 cp = request.POST.copy();
                 cp['bankmembership_set-TOTAL_FORMS'] = int(cp['bankmembership_set-TOTAL_FORMS'])+1;
@@ -82,10 +84,8 @@ class person:
                     addformset.save();
                     bankmemformset.save();
                     return redirect('personal:person_list');
-            ##except DatabaseError as dberr:
             except Exception as ex:
                 message = "Database Error occurred";
-                explanation = str(dberr);
                 status_code=400;
                 return JsonResponse({'message':message,'explanation':explanation}, status=status_code)
             else :
@@ -130,7 +130,7 @@ class person:
 
     #####################################################
     """
-    The follownig code is not being used.
+    The following code is not being used.
     """
     ######################################################
     def index( self,request):
@@ -149,7 +149,6 @@ class person:
                 first_name  = form.cleaned_data['first_name'];
                 middle_name = form.cleaned_data['middle_name'];
                 last_name   = form.cleaned_data['last_name'];
-               #dob         = form.cleaned_data['dob'];
                 emailid     = form.cleaned_data['emailid'];
                 gender      = form.cleaned_data['gender'];
                 age         = form.cleaned_data['age'];

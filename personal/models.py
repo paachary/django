@@ -3,7 +3,7 @@ from django.db import models;
 
 # Create your models here.
 
-
+### Personal information
 class PersonalInfo(models.Model):
     first_name = models.CharField(max_length=500, default=None, verbose_name="First Name");
     middle_name = models.CharField(max_length=500, default=None);
@@ -27,6 +27,7 @@ class PersonalInfo(models.Model):
     class Meta:
         unique_together = ('first_name', 'middle_name', 'last_name');
 
+### Personal Phone information
 class PhoneInfo(models.Model):
     person = models.ForeignKey(PersonalInfo, on_delete=models.CASCADE);
     phone_type = models.CharField(choices=(("R",("Residence")),
@@ -38,6 +39,7 @@ class PhoneInfo(models.Model):
     class Meta:
         unique_together = ('person', 'phone_type', 'phone_nbr');
 
+### Personal Address information
 class AddressInfo(models.Model):
     person = models.ForeignKey(PersonalInfo, on_delete=models.CASCADE);
     address_type = models.CharField(choices=(("P", ("Permanent")),
@@ -52,6 +54,7 @@ class AddressInfo(models.Model):
     class Meta:
         unique_together = ('person', 'address_type');
 
+### Bank Information
 class BankInfo(models.Model):
     name = models.CharField(max_length=2000, verbose_name="Bank Name");
     bnk_abbr_name = models.CharField(max_length=200, verbose_name="Bank Short Name", null=True,default=None);
@@ -65,9 +68,10 @@ class BankInfo(models.Model):
     class Meta:
         unique_together = ('name', 'branch');
 
-    def __str__(self):
-        return u'{0}'.format(self.bnk_abbr_name+"-"+brn_abbr_name);
+#    def __str__(self):
+#        return u'{0}'.format(self.bnk_abbr_name+"-"+brn_abbr_name);
 
+### Association between person and bank
 class BankMembership(models.Model):
     person = models.ForeignKey(PersonalInfo, on_delete=models.CASCADE);
     bank = models.ForeignKey(BankInfo, on_delete=models.CASCADE);
@@ -80,3 +84,15 @@ class BankMembership(models.Model):
     class Meta:
         unique_together = ('person', 'bank', 'acct_type', 'acctnbr');
 
+### Association between person and his debit accounts
+class BankDebitDetails(models.Model):
+    bankmembership = models.ForeignKey(BankMembership, on_delete=models.CASCADE);
+    debit_dt = models.DateField(default=None);
+    debit_type = models.CharField(choices=(("E",("EXPENDITURE")),
+                                         ("S",("SAVING"))), max_length=2, default="S", verbose_name="Debit Type");
+    debit_desc = models.CharField(max_length=2000, default=None);
+    amount = models.IntegerField(default=0);
+    remarks = models.CharField(max_length=2000, blank=True);
+
+    def get_year_month(self):
+        return (self.debit_dt.strftime("%Y-%m"));
