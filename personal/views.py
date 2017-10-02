@@ -1,5 +1,6 @@
+from django.shortcuts import render, redirect, get_object_or_404, render_to_response;
 from . import person_view, bank_view;
-
+from .models import BankMembership, PersonalInfo, BankInfo;
 ################################
 """
 Start - Person specific functions
@@ -51,4 +52,10 @@ def bank_delete(request, pk, template_name='personal/bank_delete.html'):
     bank = bank_view.bank();
     return (bank.bank_delete(request=request, bank_id=pk, template_name=template_name));
 
+def bank_details(request, pk, template_name='personal/bank_details_add.html'):
+    bank = bank_view.bank();
+    return (bank.bank_debit_dtls_upsert(request=request, membership_id=pk, template_name=template_name));
 
+def bank_debit_details_list(request, pk, template_name='personal/bank_debit_details_list.html'):
+    bank = bank_view.bank();
+    return (bank.bank_debit_dtls_list(request=request, membership_id=pk, template_name=template_name));

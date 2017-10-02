@@ -12,5 +12,8 @@ urlpatterns = [
     url(r'^newbank$', views.bank_create, name='bank_new'),
     url(r'^editbank/(?P<pk>\d+)$', views.bank_update, name='bank_edit'),
     url(r'^deletebank/(?P<pk>\d+)$', views.bank_delete, name='bank_delete'),
+
+    url(r'^addbankdtls/(?P<pk>\d+)$', views.bank_details, name='bank_details_add'),
+    url(r'^viewbankdtls/(?P<pk>\d+)$', views.bank_debit_details_list, name='bank_debit_details_list'),
 ]
 
